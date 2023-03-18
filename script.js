@@ -1,22 +1,40 @@
-function calculateMinCost() {
-  //your code here
-  // read data from input element;
-  var inputData = document.querySelector("#rope-lengths").value;
-  var inputArr = inputData.split(",");
+function findMinCost(arr) {
+  // Create a priority queue to store the ropes lengths
+  const pq = new MinPriorityQueue();
 
-  for (var i = 0; i < inputArr.length; i++) {
-    inputArr[i] = Number(inputArr[i]);
+  // Add all the ropes to the priority queue
+  for (let i = 0; i < arr.length; i++) {
+    pq.enqueue(arr[i]);
   }
-  var cost = 0;
 
-  while (inputArr.length > 1) {
-    var newRope = inputArr[0] + inputArr[1];
+  // Connect the ropes until only one rope is left in the priority queue
+  let cost = 0;
+  while (pq.size() > 1) {
+    // Remove the two smallest ropes from the priority queue
+    const rope1 = pq.dequeue().element;
+    const rope2 = pq.dequeue().element;
+
+    // Calculate the cost of connecting the ropes
+    const newRope = rope1 + rope2;
     cost += newRope;
 
-    // delete first two element
-    inputArr.splice(0, 2);
-    inputArr.push(newRope);
-    //alert(newRope);
+    // Add the new rope to the priority queue
+    pq.enqueue(newRope);
   }
-  document.querySelector("#result").textContent = cost;
+
+  // Return the minimum cost
+  return cost;
 }
+
+// Get the input from the user
+const input = prompt("Enter comma separated lengths of ropes:");
+
+// Parse the input into an array of integers
+const arr = input.split(",").map((x) => parseInt(x));
+
+// Find the minimum cost of connecting the ropes
+const minCost = findMinCost(arr);
+
+// Display the result in the output div
+const outputDiv = document.getElementById("result");
+outputDiv.innerText = `Minimum cost of connecting the ropes: ${minCost}`;
